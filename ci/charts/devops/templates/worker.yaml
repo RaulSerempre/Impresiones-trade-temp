@@ -1,0 +1,130 @@
+{{/* Pod Annotations */}}
+{{- $rawPodAnnotations := (include "devops.podAnnotations" . | fromYaml) -}}
+{{- $podAnnotations := mustMergeOverwrite .Values.podAnnotations $rawPodAnnotations -}}
+{{/* Pod Security Context */}}
+{{- $rawPodSecurityContext := (include "devops.podSecurityContext" . | fromYaml) -}}
+{{- $podSecurityContext := mustMergeOverwrite .Values.podSecurityContext $rawPodSecurityContext -}}
+{{/* Container Security Context */}}
+{{- $rawSecurityContext := (include "devops.securityContext" . | fromYaml) -}}
+{{- $securityContext := mustMergeOverwrite .Values.securityContext $rawSecurityContext -}}
+{{/* Util */}}
+{{- $rawName := (include "devops.name" .) -}}
+{{- $name := printf "%s-%s" (include "devops.name" .) "worker" -}}
+{{- $withVolumes := or .Values.volumePaths .Values.additionalVolumeMounts .Values.additionalVolumes .Values.encryptedMySQLConnection .Values.encryptedMongoDBConnection -}}
+{{/* Labels */}}
+{{- $labelOverrides := dict "app" $name "app.kubernetes.io/name" $name "component" "worker" "app.kubernetes.io/component" "worker" -}}
+{{- $rawLabels := (include "devops.labels" . | fromYaml) -}}
+{{- $rawSelectorLabels := (include "devops.selectorLabels" . | fromYaml) -}}
+{{- $labels := mustMergeOverwrite $rawLabels $labelOverrides -}}
+{{- $selectorLabels := mustMergeOverwrite $rawSelectorLabels $labelOverrides -}}
+
+{{- if .Values.worker.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Values.app.env }}
+  labels:
+    {{- $labels | toYaml | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- $selectorLabels | toYaml | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- $podAnnotations | toYaml | nindent 8 }}
+      labels:
+        {{- $selectorLabels | toYaml | nindent 8 }}
+    spec:
+      securityContext:
+        {{- $podSecurityContext | toYaml | nindent 8 }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      containers:
+        - name: {{ .Values.containerName }}
+          securityContext:
+            {{- $securityContext | toYaml | nindent 12 }}
+          image: {{ include "devops.completeWorkerImage" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if or .Values.worker.postStartCommand .Values.worker.preStopCommand }}
+          lifecycle:
+            {{- if .Values.worker.postStartCommand }}
+            postStart:
+              exec:
+                command:
+                  {{- .Values.worker.postStartCommand | toYaml | nindent 18 }}
+            {{- end }}
+            {{- if .Values.worker.preStopCommand }}
+            preStop:
+              exec:
+                command:
+                  {{- .Values.worker.preStopCommand | toYaml | nindent 18 }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $rawName }}-env
+                optional: false
+          {{- end }}
+          {{- if (or .Values.encryptedMySQLConnection .Values.encryptedMongoDBConnection)}}
+          env:
+            {{- if .Values.encryptedMySQLConnection }}
+            - name: MYSQL_ATTR_SSL_CA
+              value: /ssl/mysql-ca.pem
+            {{- end }}
+            {{- if .Values.encryptedMongoDBConnection }}
+            - name: DB_CA
+              value: /ssl/mongodb-ca.pem
+            {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.worker.resources | nindent 12 }}
+          {{- if $withVolumes }}
+          volumeMounts:
+            {{- if .Values.volumePaths }}
+            {{- range $mount := .Values.volumePaths }}
+            - name: {{ $rawName }}-data
+              mountPath: {{ $mount.mountPath }}
+              subPath: {{ $mount.appPath | default $rawName }}{{if $mount.dirPath }}/{{ $mount.dirPath }}{{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.encryptedMySQLConnection }}
+            - name: mysql-ca
+              mountPath: /ssl/mysql-ca.pem
+              subPath: mysql-ca.pem
+              readOnly: true
+            {{- end }}
+            {{- if .Values.encryptedMongoDBConnection }}
+            - name: mongodb-ca
+              mountPath: /ssl/mongodb-ca.pem
+              subPath: mongodb-ca.pem
+              readOnly: true
+            {{- end }}
+            {{- if .Values.additionalVolumeMounts }}
+            {{- .Values.additionalVolumeMounts | toYaml | nindent 12 }}
+            {{- end }}
+          {{- end }}
+      {{- if $withVolumes }}
+      volumes:
+        {{- if .Values.volumePaths }}
+        - name: {{ include "devops.name" . }}-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.app.env }}-pvc
+        {{- end }}
+        {{- if .Values.encryptedMySQLConnection }}
+        - name: mysql-ca
+          secret:
+            secretName: mysql-ca
+        {{- end }}
+        {{- if .Values.encryptedMongoDBConnection }}
+        - name: mongodb-ca
+          secret:
+            secretName: mongodb-ca
+        {{- end }}
+        {{- if .Values.additionalVolumeMounts }}
+        {{- .Values.additionalVolumes | toYaml | nindent 8 }}
+        {{- end }}
+      {{- end }}
+{{- end -}}

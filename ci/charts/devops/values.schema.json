@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "title": "Values Schema",
+  "description": "Tech People deployment Helm chart validation.",
+  "type": "object",
+  "required": [
+    "app",
+    "ingress"
+  ],
+  "properties": {
+    "app": {
+      "type": "object",
+      "required": [
+        "env",
+        "name",
+        "team"
+      ],
+      "properties": {
+        "env": {
+          "type": "string",
+          "enum": [
+            "dev",
+            "stage",
+            "prod"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "pattern": ""
+        },
+        "team": {
+          "type": "string"
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "certificates": {
+          "type": "object"
+        },
+        "domains": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

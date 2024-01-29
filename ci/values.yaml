@@ -1,0 +1,43 @@
+devops:
+  app:
+    env: dev
+    name: trade-impresiones-front
+    component: front
+    team: trade
+    version: "1.0.0"
+  
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/from-to-www-redirect: "false"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    domains:
+      prod:
+        - api.cantoexecution.com
+      stage:
+        - api.stage.cantoexecution.com
+      dev:
+        - api.dev.cantoexecution.com
+    certificates:
+      prod:
+        automatic: false
+        secretName: trade-impresiones-ssl
+      stage:
+        automatic: false
+        secretName: trade-impresiones-ssl
+      dev:
+        automatic: false
+        secretName: trade-impresiones-ssl
+
+  service:
+    targetPort: 8888
+
+
+
+  resources:
+    limits:
+      cpu: 50m
+      memory: 64Mi
+    requests:
+      cpu: 30m
+      memory: 32Mi

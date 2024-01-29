@@ -1,0 +1,186 @@
+trigger:
+  branches:
+    include:
+      - develop
+      - stage
+      - master
+
+pr:
+  - develop
+  - master
+  - feature/*
+
+variables:
+  # ACR Setup
+  - name: containerRegistry
+    ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master')}}:
+      value: "mazcontainerdrupalprod.azurecr.io"
+    ${{ else }}:
+      value: "mazcontainerdrupalnonprod.azurecr.io"
+  
+  - name: dockerRegistryServiceConnection
+    ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master')}}:
+      value: "ABI MAZ TECH ACR PROD"
+    ${{ else }}:
+      value: "ABI MAZ TECH ACR NON-PROD"
+
+  - name: azureResourceGroup
+    ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master')}}:
+      value: "MAZ_TECHMAZ_RG_DIGITAL_PRODUCTS_DRUPAL_PROD"
+    ${{ else }}:
+      value: "MAZ_TECHMAZ_RG_DIGITAL_PRODUCTS_DRUPAL_NO_PROD"
+
+  - name: kubernetesCluster
+    ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master')}}:
+      value: "maztechdpdrupal-prod-aks"
+    ${{ else }}:
+      value: "maztechdpdrupal-nonprod-aks"
+
+
+  - name: dockerfilePath
+    value: "**/Dockerfile"
+
+  - name: appName
+    value: "trade-impresiones-front"
+
+
+  - name: azureSubscriptionEndpoint
+    value: "ABI MAZ INFRA AGENT"
+
+  - name: appEnv
+    value: ""
+
+  - name: tag
+    value: "$(Build.BuildId)"
+
+  - name: withPackages
+    value: ""
+
+  - name: agentPool
+    value: "MAZ TECH DevOps Pipelines NO-PROD"
+
+
+
+
+pool:
+  vmImage: "ubuntu-latest"
+
+stages:
+  - stage: BuildStage
+    displayName: Build and push stage
+    jobs:
+      - job: BuildJob
+        displayName: Build
+        pool:
+          name: '$(agentPool)'        
+        steps:
+          - checkout: self
+            submodules: true
+            clean: true
+            persistCredentials: true
+
+
+          - script: |
+              if [ "$(Build.SourceBranch)" == "refs/heads/develop" ]
+              then
+                echo "##vso[task.setvariable variable=appEnv]dev"
+                echo "##vso[task.setvariable variable=withPackages]vim"
+              elif [ "$(Build.SourceBranch)" == "refs/heads/stage" ]
+              then
+                echo "##vso[task.setvariable variable=appEnv]stage"
+              else
+                echo "##vso[task.setvariable variable=appEnv]prod"
+              fi
+            displayName: Setup Variables
+
+          - script: |
+              git config --global user.email "c4edeployuser@ab-inbev.com"
+              git config --global user.name "c4edeployuser"
+              SOURCE_BRANCH=$(echo $(System.PullRequest.SourceBranch) | cut -d "/" -f 3-)
+              TARGET_BRANCH=$(echo $(System.PullRequest.TargetBranch) | cut -d "/" -f 3-)
+              BS=`git rev-list --right-only --count remotes/origin/${SOURCE_BRANCH}..remotes/origin/${TARGET_BRANCH}`
+              if [[ ${BS} -gt 0 ]]
+              then
+                echo -e "Your Source Branch is Behind the Target Branch by ${BS} commits \n"
+                echo -e "\n *** Performing Automated Reverse Sync *** \n"
+                git checkout ${TARGET_BRANCH}
+                git checkout ${SOURCE_BRANCH}
+                git merge ${TARGET_BRANCH} -m "Automatic Reverse Sync by Azure Pipeline"
+                git push
+              else
+                echo -e "\n***Branch is in Sync with the Target Branch***\n"
+              fi
+            condition: and(succeeded(), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/develop'))
+            displayName: "Branch Sync Check"
+
+       
+          - task: Docker@2
+            displayName: Build Docker image
+            condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'Manual'))
+            inputs:
+              command: build
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: apps/$(appName)-$(appEnv)
+              dockerfile: $(dockerfilePath)
+              tags: $(tag)
+              arguments: --build-arg WITH_PACKAGES=$(withPackages)
+
+          - task: Docker@2
+            displayName: Push to ACR
+            condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'Manual'))
+            inputs:
+              command: push
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: apps/$(appName)-$(appEnv)
+              tags: $(tag)
+
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Helm Chart
+            inputs:
+              targetPath: "./ci"
+              artifactName: "ContinuousIntegration"
+
+
+  - ${{ if in(variables['Build.SourceBranch'], 'refs/heads/develop', 'refs/heads/stage', 'refs/heads/master') }}:
+    - stage: Deployment
+      dependsOn: BuildStage
+      pool:
+        name: '$(agentPool)'      
+      condition: and(succeeded(), in(variables['Build.Reason'], 'IndividualCI', 'Manual'))
+      displayName: Deployment
+      jobs:
+        - deployment: deployment
+          environment: Kubernetes-Cluster
+          strategy:
+            runOnce:
+              deploy:
+                steps:
+                  - script: |
+                      if [ "$(Build.SourceBranch)" == "refs/heads/develop" ]
+                      then
+                        echo "##vso[task.setvariable variable=appEnv]dev"
+                      elif [ "$(Build.SourceBranch)" == "refs/heads/stage" ]
+                      then
+                        echo "##vso[task.setvariable variable=appEnv]stage"
+                      else
+                        echo "##vso[task.setvariable variable=appEnv]prod"
+                      fi
+                    displayName: "Setup Variables"
+
+                  - task: HelmDeploy@0
+                    displayName: Helm install Package
+                    inputs:
+                      connectionType: Azure Resource Manager
+                      azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+                      azureResourceGroup: $(azureResourceGroup)
+                      kubernetesCluster: $(kubernetesCluster)
+                      namespace: $(appEnv)
+                      command: upgrade
+                      chartType: filepath
+                      chartPath: ../ContinuousIntegration/
+                      releaseName: $(appName)
+                      valueFile: ../ContinuousIntegration/values.yaml
+                      install: true
+                      waitForExecution: true
+                      arguments: --atomic
+                      overrideValues: "devops.app.env=$(appEnv),devops.app.name=$(appName),devops.image.registry=$(containerRegistry),devops.image.tag=$(tag)"

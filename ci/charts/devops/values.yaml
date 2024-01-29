@@ -1,0 +1,78 @@
+app:
+  env: ''
+  name: ''
+  component: ''
+  partOf: ''
+  team: ''
+  version: ''
+
+image:
+  registry: crtechpeople.azurecr.io
+  pullPolicy: IfNotPresent
+  tag: ''
+
+ingress:
+  enabled: false
+  annotations: {}
+  certificates: {}
+  domains: {}
+
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+  targetPort:
+
+# Deployment
+replicaCount: 1
+strategy: {}
+containerName: 'server'
+envFromSecret: false
+encryptedMySQLConnection: false
+encryptedMongoDBConnection: false
+postStartCommand: []
+preStopCommand: []
+probes:
+  enabled: false
+  liveness: {}
+  readiness: {}
+podAnnotations: {}
+podSecurityContext:
+  runAsUser: 33
+  runAsGroup: 33
+securityContext: {}
+resources: {}
+nodeSelector:
+  kubernetes.io/os: linux
+tolerations: []
+affinity: {}
+volumePaths: []
+additionalVolumes: []
+additionalVolumeMounts: []
+automountServiceAccountToken: false
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 85
+  targetMemoryUtilizationPercentage: 85
+
+cronjob:
+  dev: false
+  stage: false
+  prod: false
+  schedule: ''
+  command: []
+  concurrencyPolicy: Forbid
+  resources: {}
+
+worker:
+  enabled: false
+  resources: {}
+  postStartCommand: []
+  preStopCommand: []
+
+cache:
+  enabled: false
+  resources: {}

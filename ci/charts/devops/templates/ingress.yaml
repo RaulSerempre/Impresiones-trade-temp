@@ -1,0 +1,42 @@
+{{- $name := include "devops.name" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- $certConfig := (index .Values.ingress.certificates .Values.app.env) -}}
+{{- $domains := (index .Values.ingress.domains .Values.app.env) -}}
+{{- $ingressAnnotations := (include "devops.ingressAnnotations" . | fromYaml)   -}}
+
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Values.app.env }}
+  labels:
+    {{- include "devops.labels" . | nindent 4 }}
+  annotations:
+    {{- mustMergeOverwrite .Values.ingress.annotations $ingressAnnotations | toYaml | nindent 4 }}
+spec:
+  ingressClassName: nginx
+  rules:
+    {{- range $domain := $domains }}
+    - host: {{ $domain }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ $name }}
+                port:
+                  number: {{ $svcPort }}
+            path: /
+            pathType: Prefix
+    {{- end }}
+  tls:
+    - hosts: 
+      {{- range $domain := $domains }}
+      - {{ $domain }}
+      {{- end -}}
+      {{- if $certConfig.automatic }}
+      secretName: {{ $name }}-tls
+      {{- else }}
+      secretName: {{ $certConfig.secretName }}
+      {{- end -}}
+{{- end -}}

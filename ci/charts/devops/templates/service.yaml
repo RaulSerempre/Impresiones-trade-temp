@@ -1,0 +1,18 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "devops.name" . }}
+  namespace: {{ .Values.app.env }}
+  labels:
+    {{- include "devops.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort | default .Values.service.port }}
+  selector:
+    {{- include "devops.selectorLabels" . | nindent 4 }}
+{{- end -}}

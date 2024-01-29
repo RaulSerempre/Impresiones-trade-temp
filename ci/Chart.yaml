@@ -1,0 +1,10 @@
+apiVersion: v2
+name: trade-impresiones-front
+description: ..
+type: application
+version: '0.1.0'
+appVersion: '1.0.0'
+
+maintainers:
+  - name: Diego Pineda 
+    email: diego.pinedac@ab-inbev.com

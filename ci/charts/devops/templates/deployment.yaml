@@ -1,0 +1,161 @@
+{{/* Pod Annotations */}}
+{{- $rawPodAnnotations := (include "devops.podAnnotations" . | fromYaml)   -}}
+{{- $podAnnotations := mustMergeOverwrite .Values.podAnnotations $rawPodAnnotations -}}
+{{/* Pod Security Context */}}
+{{- $rawPodSecurityContext := (include "devops.podSecurityContext" . | fromYaml)   -}}
+{{- $podSecurityContext := mustMergeOverwrite .Values.podSecurityContext $rawPodSecurityContext -}}
+{{/* Container Security Context */}}
+{{- $rawSecurityContext := (include "devops.securityContext" . | fromYaml)   -}}
+{{- $securityContext := mustMergeOverwrite .Values.securityContext $rawSecurityContext -}}
+{{/* Liveness Probe */}}
+{{- $liveness := .Values.probes.liveness -}}
+{{- $livenessHttpGet := dict "path" .Values.probes.liveness.path "port" (.Values.service.targetPort | default .Values.service.port) -}}
+{{- $_ := set $liveness "httpGet" $livenessHttpGet -}}
+{{- $_ := unset $liveness "path" -}}
+{{/* Readiness Probe */}}
+{{- $readiness := .Values.probes.readiness -}}
+{{- $readinessHttpGet := dict "path" .Values.probes.readiness.path "port" (.Values.service.targetPort | default .Values.service.port) -}}
+{{- $_ := set $readiness "httpGet" $readinessHttpGet -}}
+{{- $_ := unset $readiness "path" -}}
+{{/* Util */}}
+{{- $name := include "devops.name" . -}}
+{{- $withVolumes := or .Values.volumePaths .Values.additionalVolumeMounts .Values.additionalVolumes .Values.encryptedMySQLConnection .Values.encryptedMongoDBConnection -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Values.app.env }}
+  labels:
+    {{- include "devops.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "devops.selectorLabels" . | nindent 6 }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- $podAnnotations | toYaml | nindent 8 }}
+      labels:
+        {{- include "devops.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        {{- $podSecurityContext | toYaml | nindent 8 }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
+      containers:
+        - name: {{ .Values.containerName }}
+          securityContext:
+            {{- $securityContext | toYaml | nindent 12 }}
+          image: {{ include "devops.completeImage" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if or .Values.postStartCommand .Values.preStopCommand }}
+          lifecycle:
+            {{- if .Values.postStartCommand }}
+            postStart:
+              exec:
+                command:
+                  {{- .Values.postStartCommand | toYaml | nindent 18 }}
+            {{- end }}
+            {{- if .Values.preStopCommand }}
+            preStop:
+              exec:
+                command:
+                  {{- .Values.preStopCommand | toYaml | nindent 18 }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ $name }}-env
+                optional: false
+          {{- end }}
+          {{- if (or .Values.encryptedMySQLConnection .Values.encryptedMongoDBConnection)}}
+          env:
+            {{- if .Values.encryptedMySQLConnection }}
+            - name: MYSQL_ATTR_SSL_CA
+              value: /ssl/mysql-ca.pem
+            {{- end }}
+            {{- if .Values.encryptedMongoDBConnection }}
+            - name: DB_CA
+              value: /ssl/mongodb-ca.pem
+            {{- end }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort | default .Values.service.port }}
+              protocol: TCP
+          {{- if .Values.probes.enabled }}
+          {{- if .Values.probes.liveness }}
+          livenessProbe:
+            {{- $liveness | toYaml | nindent 12 }}
+          {{- end }}
+          {{- if .Values.probes.readiness }}
+          readinessProbe:
+            {{- .Values.probes.readiness | toYaml | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if $withVolumes }}
+          volumeMounts:
+            {{- if .Values.volumePaths }}
+            {{- range $mount := .Values.volumePaths }}
+            - name: {{ $name }}-data
+              mountPath: {{ $mount.mountPath }}
+              subPath: {{ $mount.appPath | default $name }}{{if $mount.dirPath }}/{{ $mount.dirPath }}{{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.encryptedMySQLConnection }}
+            - name: mysql-ca
+              mountPath: /ssl/mysql-ca.pem
+              subPath: mysql-ca.pem
+            {{- end }}
+            {{- if .Values.encryptedMongoDBConnection }}
+            - name: mongodb-ca
+              mountPath: /ssl/mongodb-ca.pem
+              subPath: mongodb-ca.pem
+            {{- end }}
+            {{- if .Values.additionalVolumeMounts }}
+            {{- .Values.additionalVolumeMounts | toYaml | nindent 12 }}
+            {{- end }}
+          {{- end }}
+      {{- if $withVolumes }}
+      volumes:
+        {{- if .Values.volumePaths }}
+        - name: {{ include "devops.name" . }}-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.app.env }}-pvc
+        {{- end }}
+        {{- if .Values.encryptedMySQLConnection }}
+        - name: mysql-ca
+          secret:
+            secretName: mysql-ca
+        {{- end }}
+        {{- if .Values.encryptedMongoDBConnection }}
+        - name: mongodb-ca
+          secret:
+            secretName: mongodb-ca
+        {{- end }}
+        {{- if .Values.additionalVolumeMounts }}
+        {{- .Values.additionalVolumes | toYaml | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

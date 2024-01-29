@@ -1,0 +1,9 @@
+apiVersion: v2
+name: devops
+description: A Helm chart for deploying Tech People applications with common configurations per environment and security recommendations.
+type: application
+version: '0.1.0'
+appVersion: '0.1.0'
+maintainers:
+  - name: Juan David Acosta
+    email: juan.acosta@ab-inbev.com
