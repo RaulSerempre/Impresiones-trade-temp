@@ -13,11 +13,11 @@ devops:
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
     domains:
       prod:
-        - api.cantoexecution.com
+        - www.cantoexecution.com
       stage:
-        - api.stage.cantoexecution.com
+        - stage.cantoexecution.com
       dev:
-        - api.dev.cantoexecution.com
+        - dev.cantoexecution.com
     certificates:
       prod:
         automatic: false
@@ -41,3 +41,10 @@ devops:
     requests:
       cpu: 30m
       memory: 32Mi
+ # Horizontal Pod Autoscaler
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 15
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 70
