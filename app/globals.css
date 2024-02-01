@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --custom-blue: #1C3E75;
+    --custom-blue-link: #26559F;
+    --custom-blue-indicator: #306BC9;
+    --custom-blue-underline: #12284B;
+    --custom-blue-sky: #D5E1F5;
+    --custom-black: #232E33;
+    --custom-primary: #333132;
+
+    --border-gray: #CFD8DC;
+    --border-gray-check: #B0BEC5;
+    --background-gray: #F3F3F3;
+    --separator-gray: #DEE2E7;
+
+    --icon-danger: #E03B55;
+    --form-error: #C31F39;
+    --icon-success: #27AE60;
+
+    --custom-purple: #EFF5FF;
+
+    --font-size: 14px;
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--custom-black ));
+  font-size: var(--font-size);
+  font-weight: 400;
+}
+
+.bg-gradient-primary {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    45deg,
+    rgba(2, 0, 36, 1) -26%,
+    rgba(0, 1, 3, 1) 0%,
+    rgba(0, 35, 75, 1) 60%,
+    rgba(150, 30, 141, 1) 100%
+  );
+}
+
+.center-vertical {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.embla__container {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%; /* Each slide covers 80% of the viewport */
+}

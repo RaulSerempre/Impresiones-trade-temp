@@ -1,0 +1,7 @@
+{
+  "status": "400",
+  "data": {
+    "title": "Algo salió mal.",
+    "message": "El correo digitado no tiene una cuenta vigente. Para ingresar, debe crear una cuenta."
+  }
+}
