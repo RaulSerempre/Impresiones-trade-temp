@@ -8,12 +8,12 @@ const nextConfig = {
   images: {
     loader: 'akamai',
     path: '',
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: ''
-      }
-    ]
+    // remotePatterns: [
+    //   {
+    //     protocol: 'https',
+    //     hostname: ''
+    //   }
+    // ]
   },
   async rewrites() {
     return [

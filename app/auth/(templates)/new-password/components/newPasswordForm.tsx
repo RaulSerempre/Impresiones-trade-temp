@@ -29,7 +29,7 @@ export const NewPasswordForm = () => {
     mode: 'onChange'
   });
 
-  console.log("ERRORS: ", errors)
+  // console.log("ERRORS: ", errors)
 
   const createNewPasswordMutation = useCreateNewPassword(() => {
     setshowModal(true);
@@ -68,16 +68,16 @@ export const NewPasswordForm = () => {
           <ButtonComponent
             type="submit"
             variant="solid"
-            isDisabled={createNewPasswordMutation.isPending}
+            disabled={createNewPasswordMutation.isPending}
           >
             {createNewPasswordMutation.isPending ? "Cargando..." : "Guardar"}
           </ButtonComponent>
         </div>
       </form>
-      {
+      {/* {
         console.log("WATCH FORM : ", watch())
         
-      }
+      } */}
 
       {showModal ? (
         <ModalComponent

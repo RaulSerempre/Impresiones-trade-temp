@@ -17,7 +17,7 @@ const BackModal = (onCloseEvent: () => void) => {
         <ButtonComponent variant="bordered" href="/trade/select-product">
           Abandonar
         </ButtonComponent>
-        <ButtonComponent onPress={onCloseEvent} variant="solid">
+        <ButtonComponent onClick={onCloseEvent} variant="solid">
           Continuar
         </ButtonComponent>
       </div>
@@ -28,13 +28,11 @@ const BackModal = (onCloseEvent: () => void) => {
 const SuccessModal = (onCloseEvent: () => void) => {
   return (
     <ModalComponent
-      isDismissable={false}
       onCloseEvent={onCloseEvent}
       title="Pedido realizado con Éxito"
       icon={<TbCircleCheckFilled/>}
       displayCloseButton={false}
       colorIcon="text-icon-success"
-      size="sm"
     >
       <div className="flex gap-2 justify-center items-center mt-6">
         <ButtonComponent variant="solid" href="/trade/select-sag">
@@ -54,14 +52,14 @@ export const OrderSummaryActions = () => {
       <div className="flex justify-center gap-4 items-center mt-10">
         <ButtonComponent
           variant="bordered"
-          onPress={() => setshowBackModal(true)}
+          onClick={() => setshowBackModal(true)}
         >
           {<ImArrowLeft2 size={20} className="text-utility-blue" />} {"Volver"}
         </ButtonComponent>
 
         <ButtonComponent
           variant="solid"
-          onPress={() => setshowSuccesModal(true)}
+          onClick={() => setshowSuccesModal(true)}
         >
           Generar Pedido
         </ButtonComponent>

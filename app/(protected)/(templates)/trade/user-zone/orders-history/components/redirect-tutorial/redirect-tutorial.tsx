@@ -11,7 +11,7 @@ export const RedirectToTutorial = () => {
         ¿Quieres saber como crear tus impresiones?
       </p>
       <div className="mt-4 flex justify-center">
-        <ButtonComponent variant="solid" onPress={()=>{push("/trade/tutorial")}}>
+        <ButtonComponent variant="solid" onClick={()=>{push("/trade/tutorial")}}>
           Conoce más
         </ButtonComponent>
       </div>

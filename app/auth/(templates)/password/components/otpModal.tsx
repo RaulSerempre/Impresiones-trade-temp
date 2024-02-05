@@ -65,7 +65,7 @@ export const OtpModal = ({ email, onCloseEvent }: IProps) => {
           </p>
         </div>
         <div className="flex justify-center mt-6">
-          <ButtonComponent variant="solid" onPress={sendEmail}>
+          <ButtonComponent variant="solid" onClick={sendEmail}>
             {"Aceptar"}
           </ButtonComponent>
         </div>
@@ -134,9 +134,9 @@ export const OtpModal = ({ email, onCloseEvent }: IProps) => {
 
   return (
     <ModalComponent
-      size={step == 1 ? "md" : "lg"}
+      // size={step == 1 ? "md" : "lg"}
       displayCloseButton={false}
-      bordered={false}
+      // bordered={false}
       onCloseEvent={() => onCloseEvent()}
     >
       {step === 1 ? emailVerification() : codeValidation()}

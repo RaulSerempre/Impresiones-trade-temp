@@ -59,7 +59,7 @@ export const PasswordFormComponent = () => {
           <ButtonComponent
             type="submit"
             variant="solid"
-            isDisabled={validatePasswordMutation.isPending}
+            disabled={validatePasswordMutation.isPending}
           >
             {validatePasswordMutation.isPending
               ? "Cargando..."
@@ -70,15 +70,15 @@ export const PasswordFormComponent = () => {
         <div className="w-full flex justify-center">
           <ButtonComponent
             variant="link"
-            isDisabled={validatePasswordMutation.isPending}
-            onPress={() => setotpModal(true)}
+            disabled={validatePasswordMutation.isPending}
+            onClick={() => setotpModal(true)}
             className="mt-6"
           >
             {"Olvidé mi contraseña"}
           </ButtonComponent>
         </div>
       </form>
-      {console.log("DATA PASS: ", watch())}
+      {/* {console.log("DATA PASS: ", watch())} */}
 
       {/* Not fount user modal */}
       {showModal && (

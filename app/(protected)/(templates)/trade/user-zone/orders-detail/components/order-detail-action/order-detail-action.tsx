@@ -11,10 +11,10 @@ export const OrderDetailAction = () => {
     <ButtonComponent
       className="w-96"
       variant="bordered"
-      onPress={back}
-      startContent={
-        <ImArrowLeft2 size={20} className="text-utility-blue absolute left-7" />
-      }
+      onClick={back}
+      // startContent={
+      //   <ImArrowLeft2 size={20} className="text-utility-blue absolute left-7" />
+      // }
     >
       {"Volver"}
     </ButtonComponent>

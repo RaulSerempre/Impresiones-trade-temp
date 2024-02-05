@@ -54,7 +54,8 @@ export const TableHistory = () => {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <ButtonComponent isIconOnly className={cn("rounded-lg p-0 h-10 w-10 max-w-10 min-w-10")} variant="solid">
+            {/* isIconOnly */}
+            <ButtonComponent  className={cn("rounded-lg p-0 h-10 w-10 max-w-10 min-w-10")} variant="solid">
                 <PiEyeBold  size={20}/>
             </ButtonComponent>
           </div>

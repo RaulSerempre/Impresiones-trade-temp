@@ -6,15 +6,15 @@ import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 
 const eventRememberme = (remember: boolean) => {
-  const { replace } = useRouter();
-  console.log("Ejecutando boton si : ", remember);
-  remember && console.log("Guardar en cockie");
-  setCookie("remember", `${remember}`);
-  replace("/auth/login");
+  remember && setCookie("remember", `${remember}`);
 };
 
 export const AgegateForm = () => {
   const [remember, setRemember] = useState(false);
+  const { push } = useRouter();
+  const redirectToLogin = () => {
+    push("/auth/login");
+  };
   return (
     <form>
       <div className="flex gap-x-6 justify-center mt-6">
@@ -22,6 +22,7 @@ export const AgegateForm = () => {
           variant="solid"
           onClick={() => {
             eventRememberme(remember);
+            redirectToLogin();
           }}
         >
           {"SÍ"}
@@ -33,7 +34,9 @@ export const AgegateForm = () => {
       <div className="mt-7 flex flex-col">
         <CheckboxComponent
           defaultChecked={remember}
-          onChange={() => setRemember(!remember)}
+          onChange={() => {
+            setRemember(!remember);
+          }}
           variant="square"
           label="Recordar mis datos.  No actives esta opción si compartes tu dispositivo."
         />
