@@ -1,0 +1,150 @@
+{
+  "carousel": {
+    "id": 1,
+    "createdAt": "2024-01-30T00:54:57.886Z",
+    "updatedAt": "2024-02-01T17:23:29.486Z",
+    "publishedAt": "2024-01-30T00:56:12.142Z",
+    "content": [
+      {
+        "id": 3,
+        "title": "Selecciona una o más SAGs",
+        "description": "Podrás seleccionar una o más SAGs para realizar tus pedidos de forma consolidada siempre que la dirección de entrega sea la misma.",
+        "icon": {
+          "id": 2,
+          "name": "pexels-james-wheeler-414612.jpg",
+          "alternativeText": null,
+          "caption": null,
+          "width": 5306,
+          "height": 3770,
+          "formats": {
+            "large": {
+              "ext": ".jpg",
+              "url": "/uploads/large_pexels_james_wheeler_414612_e8ccb21fe7.jpg",
+              "hash": "large_pexels_james_wheeler_414612_e8ccb21fe7",
+              "mime": "image/jpeg",
+              "name": "large_pexels-james-wheeler-414612.jpg",
+              "path": null,
+              "size": 118.38,
+              "width": 1000,
+              "height": 710
+            },
+            "small": {
+              "ext": ".jpg",
+              "url": "/uploads/small_pexels_james_wheeler_414612_e8ccb21fe7.jpg",
+              "hash": "small_pexels_james_wheeler_414612_e8ccb21fe7",
+              "mime": "image/jpeg",
+              "name": "small_pexels-james-wheeler-414612.jpg",
+              "path": null,
+              "size": 33.06,
+              "width": 500,
+              "height": 355
+            },
+            "medium": {
+              "ext": ".jpg",
+              "url": "/uploads/medium_pexels_james_wheeler_414612_e8ccb21fe7.jpg",
+              "hash": "medium_pexels_james_wheeler_414612_e8ccb21fe7",
+              "mime": "image/jpeg",
+              "name": "medium_pexels-james-wheeler-414612.jpg",
+              "path": null,
+              "size": 71,
+              "width": 750,
+              "height": 533
+            },
+            "thumbnail": {
+              "ext": ".jpg",
+              "url": "/uploads/thumbnail_pexels_james_wheeler_414612_e8ccb21fe7.jpg",
+              "hash": "thumbnail_pexels_james_wheeler_414612_e8ccb21fe7",
+              "mime": "image/jpeg",
+              "name": "thumbnail_pexels-james-wheeler-414612.jpg",
+              "path": null,
+              "size": 7.56,
+              "width": 220,
+              "height": 156
+            }
+          },
+          "hash": "pexels_james_wheeler_414612_e8ccb21fe7",
+          "ext": ".jpg",
+          "mime": "image/jpeg",
+          "size": 1534.38,
+          "url": "/uploads/pexels_james_wheeler_414612_e8ccb21fe7.jpg",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "folderPath": "/",
+          "createdAt": "2024-01-26T13:52:02.001Z",
+          "updatedAt": "2024-01-26T13:52:02.001Z"
+        }
+      },
+      {
+        "id": 4,
+        "title": "Selecciona una o más SAGs",
+        "description": "Podrás seleccionar una o más SAGs para realizar tus pedidos de forma consolidada siempre que la dirección de entrega sea la misma.",
+        "icon": {
+          "id": 1,
+          "name": "free-images.jpg",
+          "alternativeText": null,
+          "caption": null,
+          "width": 1200,
+          "height": 800,
+          "formats": {
+            "large": {
+              "ext": ".jpg",
+              "url": "/uploads/large_free_images_9663fe2e25.jpg",
+              "hash": "large_free_images_9663fe2e25",
+              "mime": "image/jpeg",
+              "name": "large_free-images.jpg",
+              "path": null,
+              "size": 86.43,
+              "width": 1000,
+              "height": 667
+            },
+            "small": {
+              "ext": ".jpg",
+              "url": "/uploads/small_free_images_9663fe2e25.jpg",
+              "hash": "small_free_images_9663fe2e25",
+              "mime": "image/jpeg",
+              "name": "small_free-images.jpg",
+              "path": null,
+              "size": 30.87,
+              "width": 500,
+              "height": 333
+            },
+            "medium": {
+              "ext": ".jpg",
+              "url": "/uploads/medium_free_images_9663fe2e25.jpg",
+              "hash": "medium_free_images_9663fe2e25",
+              "mime": "image/jpeg",
+              "name": "medium_free-images.jpg",
+              "path": null,
+              "size": 56.66,
+              "width": 750,
+              "height": 500
+            },
+            "thumbnail": {
+              "ext": ".jpg",
+              "url": "/uploads/thumbnail_free_images_9663fe2e25.jpg",
+              "hash": "thumbnail_free_images_9663fe2e25",
+              "mime": "image/jpeg",
+              "name": "thumbnail_free-images.jpg",
+              "path": null,
+              "size": 9.63,
+              "width": 234,
+              "height": 156
+            }
+          },
+          "hash": "free_images_9663fe2e25",
+          "ext": ".jpg",
+          "mime": "image/jpeg",
+          "size": 110.44,
+          "url": "/uploads/free_images_9663fe2e25.jpg",
+          "previewUrl": null,
+          "provider": "local",
+          "provider_metadata": null,
+          "folderPath": "/",
+          "createdAt": "2024-01-26T13:52:01.140Z",
+          "updatedAt": "2024-01-30T05:49:04.928Z"
+        }
+      }
+    ]
+  }
+}

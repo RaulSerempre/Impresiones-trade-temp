@@ -1,4 +1,4 @@
-import { validateEmailApi, validatePasswordApi } from "@/src/services/auth/auth.service";
+import { validateEmailApi, validatePasswordApi } from "@/src/api/services/auth/auth.service";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -10,7 +10,7 @@ export const useValidateEmailMutation = ( onErrorFn?: ()=>void) => {
   const mutation = useMutation({
     mutationFn: validateEmailApi,
     onSuccess: () => {
-      push('/auth/password')
+      // push('/auth/password')
     },
     onError: (error:any) => {
       console.log("ERROR : ", JSON.stringify(error));

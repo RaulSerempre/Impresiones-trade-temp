@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    --custom-blue: #1C3E75;
-    --custom-blue-link: #26559F;
-    --custom-blue-indicator: #306BC9;
-    --custom-blue-underline: #12284B;
-    --custom-blue-sky: #D5E1F5;
-    --custom-black: #232E33;
+    --custom-blue: #1c3e75;
+    --custom-blue-link: #26559f;
+    --custom-blue-indicator: #306bc9;
+    --custom-blue-underline: #12284b;
+    --custom-blue-sky: #d5e1f5;
+    --custom-black: #232e33;
     --custom-primary: #333132;
 
-    --border-gray: #CFD8DC;
-    --border-gray-check: #B0BEC5;
-    --background-gray: #F3F3F3;
-    --separator-gray: #DEE2E7;
+    --border-gray: #cfd8dc;
+    --border-gray-check: #b0bec5;
+    --background-gray: #f3f3f3;
+    --separator-gray: #dee2e7;
 
-    --icon-danger: #E03B55;
-    --form-error: #C31F39;
-    --icon-success: #27AE60;
+    --icon-danger: #e03b55;
+    --form-error: #c31f39;
+    --icon-success: #27ae60;
 
-    --custom-purple: #EFF5FF;
+    --custom-purple: #eff5ff;
 
     --font-size: 14px;
     --foreground-rgb: 0, 0, 0;
@@ -39,7 +39,7 @@
 }
 
 body {
-  color: rgb(var(--custom-black ));
+  color: rgb(var(--custom-black));
   font-size: var(--font-size);
   font-weight: 400;
 }
@@ -64,4 +64,35 @@ body {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 100%; /* Each slide covers 80% of the viewport */
+}
+
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  border: 1px solid #fff;
+  width: 500px;
+  background-color: #fff;
+  border-radius: 15px;
+}
+
+.ripple-animate {
+  transform: scale(0);
+  animation-name: ripple;
+  animation-duration: 1000ms;
+}
+
+@keyframes ripple {
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
 }

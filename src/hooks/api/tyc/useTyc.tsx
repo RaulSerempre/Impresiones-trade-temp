@@ -1,5 +1,5 @@
 import { useReactQuery } from "../useApi";
-import { tycService } from "@/src/services/tyc/tyc.service";
+import { tycService } from "@/src/api/services/tyc/tyc.service";
 
 export const useGetTycQuery = () => {
   console.log("Consume : useGetTycQuery");

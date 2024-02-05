@@ -7,7 +7,13 @@ const nextConfig = {
   output: 'standalone',
   images: {
     loader: 'akamai',
-    path: ''
+    path: '',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: ''
+      }
+    ]
   },
   async rewrites() {
     return [

@@ -1,14 +1,14 @@
 import { apiService } from "../http.service";
 import {
-  IValidateEmailResponse,
   IValidatePasswordResponse,
 } from "@/src/interfaces/aurh/auth.interface";
 import { AxiosError } from "axios";
 import { IValidateEmailRequest } from "@/src/lib/validations";
 import { INewPasswordRequest } from "@/src/lib/validations/new-password-form.validation";
 import { IValidatePasswordRequest } from "@/src/lib/validations/password-form.validation";
+import { IValidateEmailResponse } from "@/src/interfaces/aurh";
+import { signIn } from "@/app/auth.config";
 
-const sleep = require('util').promisify(setTimeout)
 
 /**
  * Validate Email before entering password , only ADMIN | TRADE users
@@ -16,6 +16,17 @@ const sleep = require('util').promisify(setTimeout)
 export const validateEmailApi = async (
   data: IValidateEmailRequest
 ): Promise<IValidateEmailResponse> => {
+  console.log("Llegamos !!! ");
+  
+  try {
+    
+  await signIn('credentials', data)
+  } catch (error) {
+    console.log("Ocurrio un error !! : ", error);
+    throw Error(`CredentialsSignIn ${error}`)
+
+    
+  }
   
   console.log("PAYLOAD fn validateEmailApi: ", data);
   const response = await apiService.get("/mocks/validate-email/succes.mock.json");

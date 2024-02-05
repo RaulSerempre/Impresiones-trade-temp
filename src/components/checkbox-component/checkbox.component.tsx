@@ -39,7 +39,7 @@ const CheckboxComponent = forwardRef<HTMLInputElement, ICheckboxProps>(
             <CustomIcon variant={variant} className="h-3 stroke-transparent" />
           </span>
 
-          <p className="select-none text-primary">{label}</p>
+          <p className="select-none text-primary flex-1">{label}</p>
         </label>
       </div>
     );

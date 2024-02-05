@@ -1,25 +1,24 @@
-import {
-  BreadcrumbItem,
-  Breadcrumbs,
-  BreadcrumbsProps,
-} from "@nextui-org/react";
+import { cn } from "@/src/lib/utils";
+import { MdOutlineFolder } from "react-icons/md";
 
-interface IBreadcrumbComponent extends BreadcrumbsProps {
+interface IProps {
   data: Array<string>;
-  icon: React.ReactNode;
+  className?: string;
 }
 
-export const BreadcrumbComponent = ({ data, icon }: IBreadcrumbComponent) => {
+export const BreadcrumbComponent = ({ data, className }: IProps) => {
   return (
-    <Breadcrumbs>
+    <div className={cn("flex flex-row cursor-default gap-3 text-primary leading-4", className)}>
       {data &&
-        data.length > 0 &&
-        data.map((item) => (
-          <BreadcrumbItem key={item.replaceAll(" ", "")}>
-            {icon}
-            <span className="text-primary ml-2">{item}</span>
-          </BreadcrumbItem>
+        data.map((item, index) => (
+            <BreadcrumbItemComponent key={item.replaceAll(" ", "")}>
+              {<MdOutlineFolder className="mr-1 text-utility-blue" size={18}/>} {<span>{item}</span>} {data.length-1 > index && (<span className="text-utility-blue text-base">&gt;</span>)}
+            </BreadcrumbItemComponent> 
         ))}
-    </Breadcrumbs>
+    </div>
   );
+};
+
+const BreadcrumbItemComponent = (props: { children: React.ReactNode }) => {
+  return <div className={cn("flex items-center gap-2")}>{props.children}</div>;
 };

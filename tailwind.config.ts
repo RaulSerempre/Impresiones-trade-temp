@@ -54,7 +54,7 @@ const config: Config = withTV({
       },
       spacing: {
         '14px': '14px',
-      }
+      },
     },
   },
   plugins: [nextui()]

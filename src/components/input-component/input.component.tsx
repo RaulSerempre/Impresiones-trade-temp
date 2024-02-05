@@ -17,7 +17,7 @@ const InputVariants = cva([], {
         "text-sm leading-4 text-primary placeholder:text-[#AAAAAA]",
         "border-b border-solid border-utility-blue-underline peer"
       ),
-      bordered: "",
+      bordered: cn("p-2.5 outline-none"),
     },
   },
 });

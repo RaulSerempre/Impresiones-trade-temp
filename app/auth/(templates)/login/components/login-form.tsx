@@ -13,8 +13,9 @@ import {
   emailValidationSchema,
 } from "@/src/lib/validations";
 import { ErrorModalLogin } from "./error-modal";
+import { authentication } from "@/src/api/actions/login";
 
-const defaultValue: IValidateEmailRequest = {
+const defaultValues: IValidateEmailRequest = {
   email: "",
   remember: false,
 };
@@ -24,30 +25,42 @@ export const LoginFormComponent = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isDirty, isValid },
   } = useForm<IValidateEmailRequest>({
     mode: "onChange",
-    defaultValues: defaultValue,
+    defaultValues,
     resolver: zodResolver(emailValidationSchema),
   });
 
   const validateEmailMutation = useValidateEmailMutation();
 
-  const onSubmit: SubmitHandler<IValidateEmailRequest> = (
+  const onSubmit: SubmitHandler<IValidateEmailRequest> = async (
     data: IValidateEmailRequest
   ) => {
-    validateEmailMutation.mutate(data);
+    // validateEmailMutation.mutate(data);
+    console.log("Llegamos aqui");
+    
+  //  await  authentication(data)
   };
+
+  const requestUserName = (formData: FormData) => {
+    // authentication(formData)
+    
+  // setshowErrorModal(true)
+  console.log("Correidno");
+  
+  }
 
   return (
     <>
-      <form className="text-left" onSubmit={handleSubmit(onSubmit)}>
+      <form className="text-left" action={requestUserName} >
         <div className="flex flex-col mb-8">
           <InputComponent
             messageError={errors.email?.message}
             variant="underlined"
+            value={'ricardo@gmail.com'}
             {...register("email")}
+            name="email"
             type="email"
             autoCapitalize="none"
             autoComplete="email"
@@ -61,13 +74,13 @@ export const LoginFormComponent = () => {
           <CheckboxComponent
             defaultChecked={false}
             {...register("remember")}
+            name="remember"
             variant="square"
             label="Recordarme"
           />
         </div>
         <div className="w-full flex justify-center">
           <ButtonComponent
-            isDisabled={!isDirty || !isValid}
             type="submit"
             variant="solid"
             formNoValidate={true}
@@ -77,15 +90,15 @@ export const LoginFormComponent = () => {
         </div>
       </form>
 
-      {/* {console.log("DATA TEMP : ", watch())} */}
-      {/* {showErrorModal && (
+      {showErrorModal && (
         <ErrorModalLogin
-          message={validateEmailMutation.data?.data.message}
+          displayCloseButton={true}
+          message={"El correo digitado no tiene una cuenta vigente. Para ingresar, debe crear una cuenta."} //{validateEmailMutation.data?.data.message}
           onCloseEvent={() => {
             setshowErrorModal(false);
           }}
         />
-      )} */}
+      )}
     </>
   );
 };

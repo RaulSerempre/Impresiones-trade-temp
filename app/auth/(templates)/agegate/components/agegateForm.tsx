@@ -1,13 +1,29 @@
-import { ButtonComponent } from "@/src/components";
+"use client";
 
-const checkboxLabel =
-  "Recordar mis datos.  No actives esta opción si compartes tu dispositivo.";
+import { ButtonComponent, CheckboxComponent } from "@/src/components";
+import { useState } from "react";
+import { setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+
+const eventRememberme = (remember: boolean) => {
+  const { replace } = useRouter();
+  console.log("Ejecutando boton si : ", remember);
+  remember && console.log("Guardar en cockie");
+  setCookie("remember", `${remember}`);
+  replace("/auth/login");
+};
 
 export const AgegateForm = () => {
+  const [remember, setRemember] = useState(false);
   return (
-    <form action="">
+    <form>
       <div className="flex gap-x-6 justify-center mt-6">
-        <ButtonComponent variant="solid" href="select-sag">
+        <ButtonComponent
+          variant="solid"
+          onClick={() => {
+            eventRememberme(remember);
+          }}
+        >
           {"SÍ"}
         </ButtonComponent>
         <ButtonComponent variant="solid" href="https://www.google.com">
@@ -15,19 +31,12 @@ export const AgegateForm = () => {
         </ButtonComponent>
       </div>
       <div className="mt-7 flex flex-col">
-        <input
-          className="w-6"
-          type="checkbox"
-          name="rememberMe"
-          id="rememberMe"
+        <CheckboxComponent
+          defaultChecked={remember}
+          onChange={() => setRemember(!remember)}
+          variant="square"
+          label="Recordar mis datos.  No actives esta opción si compartes tu dispositivo."
         />
-        <label
-          className="text-utility-black text-sm font-normal ml-4 leading-4"
-          htmlFor="rememberMe"
-        >
-          Recordar mis datos. No actives esta opción si compartes tu
-          dispositivo.
-        </label>
       </div>
     </form>
   );

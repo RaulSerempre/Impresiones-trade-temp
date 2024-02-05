@@ -1,20 +1,19 @@
-import { ModalComponent } from '@/src/components'
+'use client'
+
+import { IModalProps, ModalComponent } from '@/src/components'
 import React from 'react'
-// import { TbAlertCircleFilled } from 'react-icons/tb';
+import { TbAlertCircleFilled } from 'react-icons/tb';
 
-interface IProps {
-  message: string
-  onCloseEvent: ()=>void
-}
 
-export const ErrorModalLogin = ({message, onCloseEvent}: IProps) => {
+export const ErrorModalLogin = (props : IModalProps) => {
   return (
     <ModalComponent
-          // icon={<TbAlertCircleFilled />}
           colorIcon="text-icon-danger"
           title={"Algo salió mal."}
-          message={message}
-          onCloseEvent={onCloseEvent}
+          textCloseButton='Volver'
+          icon={<TbAlertCircleFilled size={75} className='mx-auto'/>}
+          rounded
+          {...props}
         />
   )
 }

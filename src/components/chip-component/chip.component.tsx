@@ -1,4 +1,4 @@
-import { EChipVariants } from "@/src/lib/constants/chip-variants";
+import { EChipVariants } from "@/src/lib/constants/enum/chip-variants";
 import { cn } from "@/src/lib/utils";
 import { cva } from "class-variance-authority";
 import { ClassValue } from "class-variance-authority/dist/types";

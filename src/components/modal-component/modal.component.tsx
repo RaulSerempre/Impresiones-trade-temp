@@ -1,16 +1,9 @@
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  ModalProps,
-} from "@nextui-org/react";
-import { ButtonComponent } from "..";
 import { cn } from "@/src/lib/utils";
+import React from "react";
+import { ButtonComponent } from "../button-component";
+import { createPortal } from "react-dom";
 
-interface IModalProps extends Omit<ModalProps, "children"> {
+export interface IModalProps {
   icon?: React.ReactNode;
   colorIcon?: string;
   title?: string;
@@ -18,85 +11,52 @@ interface IModalProps extends Omit<ModalProps, "children"> {
   children?: React.ReactNode;
   displayCloseButton?: boolean;
   textCloseButton?: string;
-  bordered?: boolean;
+  rounded?: boolean;
   onCloseEvent: () => void;
 }
 
-export const ModalComponent = ({
-  onCloseEvent,
-  children,
-  icon,
-  colorIcon,
-  size = "md",
-  message,
-  title,
-  displayCloseButton = true,
-  bordered = true,
-  textCloseButton = "Volver",
-  ...props
-}: IModalProps) => {
-  const { onOpenChange } = useDisclosure();
-
-  return (
-    <>
-      <Modal
-        size={size}
-        defaultOpen={true}
-        onOpenChange={onOpenChange}
-        hideCloseButton={true}
-        onClose={onCloseEvent}
-        {...props}
+export const ModalComponent = ({ onCloseEvent, ...props }: IModalProps) => {
+  return createPortal(
+    <section className="modal">
+      <article
+        className={cn(
+          "w-[408px] bg-white p-10 shadow-lg",
+          props.rounded ? "rounded-2xl" : "rounded-none"
+        )}
       >
-        <ModalContent
-          className={`p-10 shadow-lg ${
-            bordered ? "rounded-2xl" : "rounded-none"
-          }`}
-        >
-          {() => (
-            <>
-              {icon && (
-                <div
-                  className={cn(
-                    "text-[75px] flex justify-center",
-                    colorIcon ? colorIcon : ""
-                  )}
-                >
-                  {icon}
-                </div>
-              )}
-
-              {(title || message) && (
-                <ModalHeader className="justify-center p-0 mt-3">
-                  <div className="text-center">
-                    {title && (
-                      <h4 className="text-[32px] font-black text-primary mb-2 leading-[38px]">
-                        {title}
-                      </h4>
-                    )}
-                    {message && (
-                      <p className="text-sm font-normal text-utility-black leading-4">
-                        {message}
-                      </p>
-                    )}
-                  </div>
-                </ModalHeader>
-              )}
-
-              {children && (
-                <ModalBody className="py-0 px-0">{children}</ModalBody>
-              )}
-
-              {displayCloseButton && (
-                <ModalFooter className="mt-6 justify-center p-0">
-                  <ButtonComponent variant="solid" onPress={onCloseEvent}>
-                    {textCloseButton}
-                  </ButtonComponent>
-                </ModalFooter>
-              )}
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+        {/* Icon */}
+        {props.icon && (
+          <div className={cn("mb-2.5", props.colorIcon && props.colorIcon)}>
+            {props.icon}
+          </div>
+        )}
+        {/* Header */}
+        {(props.title || props.message) && (
+          <div className="text-center">
+            {props.title && (
+              <h4 className="text-[32px] font-black text-utility-blue-underline mb-2 leading-[38px]">
+                {props.title}
+              </h4>
+            )}
+            {props.message && (
+              <p className="text-sm font-normal text-utility-black leading-4">
+                {props.message}
+              </p>
+            )}
+          </div>
+        )}
+        {/* Content  */}
+        {props.children && <div>{props.children}</div>}
+        {/* Footer */}
+        {props.displayCloseButton && (
+          <div className="mt-6 flex justify-center">
+            <ButtonComponent variant="solid" onClick={onCloseEvent}>
+              {props.textCloseButton}
+            </ButtonComponent>
+          </div>
+        )}
+      </article>
+    </section>,
+    document.body
   );
 };
