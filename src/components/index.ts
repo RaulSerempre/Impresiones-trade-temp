@@ -9,4 +9,5 @@ export * from './input-component';
 export * from './modal-component';
 export * from './searchbar-component';
 export * from './select-component';
+export * from './spinner-component';
 export * from './title-component';

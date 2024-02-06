@@ -1,0 +1,16 @@
+{
+  "agegate": {
+    "id": 1,
+    "ageGateTemplateType": "yesOrNot",
+    "urlsToSkip": "https://www.google.com",
+    "yesDatalayersConfig": null,
+    "noDatalayersConfig": null,
+    "rememberMeDatalayerConfig": null,
+    "redirectDatalayerConfig": null,
+    "enterDatalayeresConfig": null,
+    "createdAt": "2024-01-24T07:46:57.770Z",
+    "updatedAt": "2024-01-24T07:46:57.770Z",
+    "publishedAt": null,
+    "content": []
+  }
+}

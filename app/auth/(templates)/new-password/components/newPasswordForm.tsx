@@ -18,10 +18,10 @@ const defaultValue: INewPasswordRequest = {
 
 export const NewPasswordForm = () => {
   const [showModal, setshowModal] = useState(false);
+  
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid, isDirty },
   } = useForm<INewPasswordRequest>({
     defaultValues: defaultValue,

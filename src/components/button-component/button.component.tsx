@@ -18,8 +18,9 @@ const buttonVariants = cva(
     variants: {
       shape: {
         solid: cn(
-          "text-white font-bold",
-          "bg-utility-blue data-[hover=true]:bg-utility-blue-link"
+          "text-white font-bold bg-utility-blue",
+          "hover:opacity-90",
+          "disabled:opacity-50"
         ),
         bordered:
           "border-solid border-3 border-utility-blue text-utility-blue font-bold",

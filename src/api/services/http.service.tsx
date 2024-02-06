@@ -3,6 +3,9 @@ import axios from "axios";
 export const apiService = axios.create({
   baseURL: "/",
   headers: {},
+  // validateStatus: function (status) {
+  //   return status == 404
+  // }
 });
 
 const errorHandler = (error: any) => {

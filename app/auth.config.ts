@@ -1,25 +1,29 @@
-import { emailValidationSchema } from "@/src/lib/validations";
+import { validatePasswordApi } from "@/src/api/services/auth/auth.service";
+import { passwordFormValidation } from "@/src/lib/validations/password-form.validation";
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
-import credentials from "next-auth/providers/credentials";
-
+import CredentialsProvider from "next-auth/providers/credentials";
 export const authConfig: NextAuthConfig = {
   pages: {
-    signIn: "/auth/login",
+    signIn: "/auth/password",
   },
   providers: [
-    credentials({
-      async authorize(credentials, req) {
+    CredentialsProvider({
+      name: "Credentials",
+      async authorize(credentials) : Promise<any>{
+        console.log("Llegamos a este punto!!!!! : ", credentials);
+        
 
         const parsedCredencials: any =
-          emailValidationSchema.safeParse(credentials);
+        passwordFormValidation.safeParse(credentials);
+          console.log("Parese credentials: ", parsedCredencials);
+          
         if (!parsedCredencials.success) return null;
 
-        // llamar al servicio de login y guardar los datos
-
-        const { email } = parsedCredencials.data;
-
-        return null;
+        const response = await validatePasswordApi(parsedCredencials.data);
+        console.log("RESPONSE DATA :", response);
+        
+        return response;
       },
     }),
   ],

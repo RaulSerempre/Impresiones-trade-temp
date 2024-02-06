@@ -17,8 +17,12 @@ export interface IModalProps {
 
 export const ModalComponent = ({ onCloseEvent, ...props }: IModalProps) => {
   return createPortal(
-    <section className="modal">
-      <article
+    <section className="fixed left-0 top-0 right-0 bottom-0 bg-black/50 flex items-center justify-center" onClick={onCloseEvent}>
+      <article onClick={(e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
         className={cn(
           "w-[408px] bg-white p-10 shadow-lg",
           props.rounded ? "rounded-2xl" : "rounded-none"

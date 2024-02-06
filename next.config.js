@@ -5,16 +5,16 @@ const nextConfig = {
   trailingSlash: false,
   assetPrefix: '',
   output: 'standalone',
-  images: {
-    loader: 'akamai',
-    path: '',
-    // remotePatterns: [
-    //   {
-    //     protocol: 'https',
-    //     hostname: ''
-    //   }
-    // ]
-  },
+  // images: {
+  //   loader: 'akamai',
+  //   path: '',
+  //   // remotePatterns: [
+  //   //   {
+  //   //     protocol: 'https',
+  //   //     hostname: ''
+  //   //   }
+  //   // ]
+  // },
   async rewrites() {
     return [
       {
