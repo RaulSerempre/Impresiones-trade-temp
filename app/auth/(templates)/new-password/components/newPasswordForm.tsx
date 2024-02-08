@@ -1,43 +1,53 @@
 "use client";
 import { ButtonComponent, InputComponent } from "@/src/components";
 import { ModalComponent } from "@/src/components/modal-component/modal.component";
-import { useCreateNewPassword } from "@/src/hooks/api";
+import { useCreatePassword } from "@/src/hooks/api/auth/useCreatePassword";
+import { ICreatePasswordResponse } from "@/src/interfaces/auth/create-password.interface";
 import {
-  INewPasswordRequest,
+  ICreatePasswordForm,
   newPasswordFormSchema,
 } from "@/src/lib/validations/new-password-form.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
-// import { TbCircleCheckFilled } from "react-icons/tb";
+import { TbCircleCheckFilled } from "react-icons/tb";
 
-const defaultValue: INewPasswordRequest = {
+const defaultValue: ICreatePasswordForm = {
   password: "",
-  confirmPassword: "",
+  passwordConfirmation: "",
 };
 
 export const NewPasswordForm = () => {
-  const [showModal, setshowModal] = useState(false);
+  
+  const searchParams = useSearchParams();
+  const {replace} = useRouter()
+  const {mutation , successModal, setsuccessModal} = useCreatePassword()
   
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
-  } = useForm<INewPasswordRequest>({
+  } = useForm<ICreatePasswordForm>({
     defaultValues: defaultValue,
     resolver: zodResolver(newPasswordFormSchema),
     mode: 'onChange'
   });
 
-  // console.log("ERRORS: ", errors)
+  const onSubmit: SubmitHandler<ICreatePasswordForm> = (
+    data: ICreatePasswordForm
+  ) => {
+    const email = searchParams.get('email') || '';
+    const otp = searchParams.get('otp') || '';
+    const payload: ICreatePasswordResponse = {...data, email: email, otp}
+    mutation.mutate(payload)
+  };
 
-  const createNewPasswordMutation = useCreateNewPassword(() => {
-    setshowModal(true);
-  });
+  const redirectToLogin = () => {
+    setsuccessModal(false);
+    replace('/auth/login');
+  }
 
-  const onSubmit: SubmitHandler<INewPasswordRequest> = (
-    data: INewPasswordRequest
-  ) => {};
+
   return (
     <>
       <form className="text-left" onSubmit={handleSubmit(onSubmit)}>
@@ -54,12 +64,12 @@ export const NewPasswordForm = () => {
           </div>
           <div>
             <InputComponent
-              {...register("confirmPassword")}
+              {...register("passwordConfirmation")}
               variant="underlined"
               type="text"
               label="Confirma tu contraseña"
               placeholder="Escribe tu contraseña"
-              messageError={errors.confirmPassword?.message}
+              messageError={errors.passwordConfirmation?.message}
             />
           </div>
         </div>
@@ -68,25 +78,19 @@ export const NewPasswordForm = () => {
           <ButtonComponent
             type="submit"
             variant="solid"
-            disabled={createNewPasswordMutation.isPending}
+            disabled={mutation.isPending}
           >
-            {createNewPasswordMutation.isPending ? "Cargando..." : "Guardar"}
+            {mutation.isPending ? "Cargando..." : "Guardar"}
           </ButtonComponent>
         </div>
       </form>
-      {/* {
-        console.log("WATCH FORM : ", watch())
-        
-      } */}
-
-      {showModal ? (
+      
+      {successModal ? (
         <ModalComponent
-          // icon={<TbCircleCheckFilled />}
+          icon={<TbCircleCheckFilled size={75} className="mx-auto" />}
           displayCloseButton={false}
           colorIcon="text-icon-success"
-          onCloseEvent={() => {
-            setshowModal(false);
-          }}
+          onCloseEvent={redirectToLogin}
         >
           <div className="text-center mt-2">
             <h4 className="mb-6 text-[#232E33] font-black text-[32px] leading-[38px]">
@@ -95,8 +99,8 @@ export const NewPasswordForm = () => {
 
             <ButtonComponent
               variant="solid"
-              href="login"
               className="inline-block"
+              onClick={redirectToLogin}
             >
               {"Iniciar sesión"}
             </ButtonComponent>

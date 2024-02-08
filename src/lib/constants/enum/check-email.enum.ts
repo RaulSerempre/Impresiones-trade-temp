@@ -1,0 +1,6 @@
+export enum EEmailStatus {
+  SUCCESS_WITHOUT_PASSWORD = 0, 
+  SUCCESS_WITH_PASSWORD = 1,
+
+  ERROR_NOT_FOUNT = 4,
+}

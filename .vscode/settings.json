@@ -11,7 +11,8 @@
   "exportall.config.relExclusion": [
     "/app/(protected)/components/index.ts",
     "/src/components/index.ts",
-    "/src/hooks/api/index.ts"
+    "/src/hooks/api/index.ts",
+    "/src/hooks/api/auth/index.ts"
   ],
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],

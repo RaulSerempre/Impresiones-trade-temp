@@ -1,5 +1,6 @@
-import { validatePasswordApi } from "@/src/api/services/auth/auth.service";
+import { signInService } from "@/src/api/services/auth/signin.service";
 import { passwordFormValidation } from "@/src/lib/validations/password-form.validation";
+import axios from "axios";
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -10,23 +11,17 @@ export const authConfig: NextAuthConfig = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
-      async authorize(credentials) : Promise<any>{
-        console.log("Llegamos a este punto!!!!! : ", credentials);
-        
-
+      async authorize(credentials): Promise<any> {
         const parsedCredencials: any =
-        passwordFormValidation.safeParse(credentials);
-          console.log("Parese credentials: ", parsedCredencials);
-          
+          passwordFormValidation.safeParse(credentials);
+
         if (!parsedCredencials.success) return null;
 
-        const response = await validatePasswordApi(parsedCredencials.data);
-        console.log("RESPONSE DATA :", response);
-        
+        const response = await signInService(parsedCredencials.data);
         return response;
       },
     }),
   ],
 };
 
-export const { signIn, signOut, auth: middleware } = NextAuth(authConfig);
+export const { signIn, signOut, auth, handlers } = NextAuth(authConfig);

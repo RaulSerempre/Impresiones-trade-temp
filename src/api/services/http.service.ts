@@ -1,14 +1,14 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const apiService = axios.create({
-  baseURL: "/",
+  baseURL: 'https://api.dev.cantoexecution.com/',
   headers: {},
   // validateStatus: function (status) {
   //   return status == 404
   // }
 });
 
-const errorHandler = (error: any) => {
+const errorHandler = (error: AxiosError) => {
   const statusCode = error.response?.status;
   if (statusCode && statusCode !== 401) {
     // remove data cache ad

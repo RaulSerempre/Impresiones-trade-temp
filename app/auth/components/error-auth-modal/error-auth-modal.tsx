@@ -5,7 +5,7 @@ import React from 'react'
 import { TbAlertCircleFilled } from 'react-icons/tb';
 
 
-export const ErrorModalLogin = (props : IModalProps) => {
+export const ErrorModalAuth = (props : IModalProps) => {
   return (
     <ModalComponent
           colorIcon="text-icon-danger"

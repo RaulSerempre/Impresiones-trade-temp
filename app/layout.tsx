@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { AppProvider } from './provider'
-import { ILayout } from '@/src/interfaces/layaut.interface'
+import { ILayout } from '@/src/interfaces/layout.interface'
 
 const inter = Inter({ subsets: ['latin'] })
 

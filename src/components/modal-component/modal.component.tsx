@@ -12,6 +12,7 @@ export interface IModalProps {
   displayCloseButton?: boolean;
   textCloseButton?: string;
   rounded?: boolean;
+  size?: number;
   onCloseEvent: () => void;
 }
 
@@ -24,9 +25,10 @@ export const ModalComponent = ({ onCloseEvent, ...props }: IModalProps) => {
         return false;
       }}
         className={cn(
-          "w-[408px] bg-white p-10 shadow-lg",
-          props.rounded ? "rounded-2xl" : "rounded-none"
+          "bg-white p-10 shadow-lg",
+          props.rounded ? "rounded-2xl" : "rounded-none",
         )}
+        style={{width: (props.size ? `${props.size}px` : '408px') }}
       >
         {/* Icon */}
         {props.icon && (

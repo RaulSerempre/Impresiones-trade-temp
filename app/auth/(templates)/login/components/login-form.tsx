@@ -12,7 +12,9 @@ import {
   emailValidationSchema,
 } from "@/src/lib/validations";
 import { useValidateEmailMutationv2 } from "@/src/hooks/api";
-import { ErrorModalLogin } from "./error-modal";
+import { OtpModal } from "@/app/auth/components/otp-modal/otp-modal";
+import { useState } from "react";
+import { ErrorModalAuth } from "@/app/auth/components";
 
 const defaultValues: IValidateEmailRequest = {
   email: "",
@@ -20,13 +22,17 @@ const defaultValues: IValidateEmailRequest = {
 };
 
 export const LoginFormComponent = () => {
-  const { data, mutation, errorModal, setErrorModal } = useValidateEmailMutationv2();
+  const [errorMessage, seterrorMessage] = useState<string>();
+
+  const { mutation, openOtpModal, setopenOtpModal } =
+    useValidateEmailMutationv2(seterrorMessage);
+
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, isDirty, isValid },
   } = useForm<IValidateEmailRequest>({
-    mode: "onChange",
     defaultValues,
     resolver: zodResolver(emailValidationSchema),
   });
@@ -40,12 +46,10 @@ export const LoginFormComponent = () => {
   return (
     <>
       <form className="text-left" onSubmit={handleSubmit(onSubmit)}>
-        {JSON.stringify(data)}
         <div className="flex flex-col mb-8">
           <InputComponent
             messageError={errors.email?.message}
             variant="underlined"
-            value={"ricardo@gmail.com"}
             {...register("email")}
             type="email"
             autoCapitalize="none"
@@ -76,14 +80,21 @@ export const LoginFormComponent = () => {
           </ButtonComponent>
         </div>
       </form>
-      {errorModal && (
-        <ErrorModalLogin
+      {errorMessage && (
+        <ErrorModalAuth
           displayCloseButton={true}
-          message={
-            "El correo digitado no tiene una cuenta vigente. Para ingresar, debe crear una cuenta."
-          } //{validateEmailMutation.data?.data.message}
+          message={errorMessage}
           onCloseEvent={() => {
-            setErrorModal(false);
+            seterrorMessage(undefined);
+          }}
+        />
+      )}
+      {openOtpModal && (
+        <OtpModal
+          email={getValues("email")}
+          onCloseEvent={() => setopenOtpModal(false)}
+          openErrorModal={() => {
+            seterrorMessage("El código no coincide");
           }}
         />
       )}

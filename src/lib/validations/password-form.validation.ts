@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const passwordFormValidation = z.object({
-  email: z.string()
+  identifier: z.string()
   .min(1, {
     message: "El correo electrónico es requerido",
   })

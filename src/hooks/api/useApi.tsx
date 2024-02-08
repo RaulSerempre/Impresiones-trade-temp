@@ -15,17 +15,3 @@ export function useReactQuery<T>(
     enabled,
   });
 }
-
-export function useReactMutation<T, Y>(
-  callback: (data: T) => Promise<Y>,
-  onsuccess?: () => void,
-  onerror?: () => void
-) {
-  const mutation = useMutation({
-    mutationFn: callback,
-    onSuccess: () => onsuccess && onsuccess(),
-    onError: () => onerror && onerror(),
-  });
-
-  return mutation;
-}

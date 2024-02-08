@@ -1,9 +1,16 @@
 
-import { ILayout } from "@/src/interfaces/layaut.interface";
+import { ILayout } from "@/src/interfaces/layout.interface";
 import { HeaderComponent } from "../components/header/header";
 import { FooterComponent } from "../components/footer/footer";
+import { auth } from "@/app/auth.config";
+import { redirect } from "next/navigation";
 
-const AdminLayout = ({ children }: ILayout) => {
+const ProtectedLayout = async ({ children }: ILayout) => {
+  const session = await auth();
+
+  if(!session?.user) {
+    redirect("/auth/login")
+  }
   return (
     <>
       <HeaderComponent></HeaderComponent>
@@ -19,4 +26,4 @@ const AdminLayout = ({ children }: ILayout) => {
   );
 };
 
-export default AdminLayout;
+export default ProtectedLayout;

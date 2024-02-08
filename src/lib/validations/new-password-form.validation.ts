@@ -19,13 +19,13 @@ export const newPasswordFormSchema = z
         new RegExp(".*[`~<>?,./!@#$%^&*()\\-_+=\"'|{}\\[\\];:\\\\].*"),
         "La contraseña debe tener al menos un símbolo"
       ),
-    confirmPassword: z.string().min(1, {
+    passwordConfirmation: z.string().min(1, {
       message: "La contraseña es requerida",
     }),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.passwordConfirmation, {
     message: "Las contraseñas no coinciden",
     path: ["confirmPassword"],
   });
 
-export type INewPasswordRequest = z.infer<typeof newPasswordFormSchema>;
+export type ICreatePasswordForm = z.infer<typeof newPasswordFormSchema>;

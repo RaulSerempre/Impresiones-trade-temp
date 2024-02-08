@@ -36,7 +36,7 @@ export const AgegateForm = () => {
         <ButtonComponent
           disabled={isLoading}
           variant="solid"
-          href={data?.agegate.urlsToSkip}
+          href={data?.agegate?.urlsToSkip || ''}
           children={"NO"}
         />
       </div>
