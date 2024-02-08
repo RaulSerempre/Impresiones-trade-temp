@@ -2,15 +2,15 @@
 import { ILayout } from "@/src/interfaces/layout.interface";
 import { HeaderComponent } from "../components/header/header";
 import { FooterComponent } from "../components/footer/footer";
-import { auth } from "@/app/auth.config";
-import { redirect } from "next/navigation";
+// import { auth } from "@/app/auth.config";
+// import { redirect } from "next/navigation";
 
-const ProtectedLayout = async ({ children }: ILayout) => {
-  const session = await auth();
+const ProtectedLayout = ({ children }: ILayout) => {
+  // const session = await auth();
 
-  if(!session?.user) {
-    redirect("/auth/login")
-  }
+  // if(!session?.user) {
+  //   redirect("/auth/login")
+  // }
   return (
     <>
       <HeaderComponent></HeaderComponent>

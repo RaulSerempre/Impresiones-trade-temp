@@ -4,13 +4,13 @@ import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
 
-const AuthLayout = async ({ children }: ILayout) => {
+const AuthLayout = ({ children }: ILayout) => {
 
-  const session = await auth();
+  // const session = await auth();
 
-  if(session?.user) {
-    redirect('/trade/tutorial')
-  }
+  // if(session?.user) {
+  //   redirect('/trade/tutorial')
+  // }
   return (
     <div className="bg-gradient-primary h-screen w-screen">
       <div className="bg-white px-10 py-10 mx-auto  w-fit relative center-vertical">

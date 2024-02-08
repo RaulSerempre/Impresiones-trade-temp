@@ -56,7 +56,7 @@ export const NewPasswordForm = () => {
             <InputComponent
               {...register("password")}
               variant="underlined"
-              type="text"
+              type="password"
               label="Nueva contraseña"
               placeholder="Escribe tu contraseña"
               messageError={errors.password?.message}
@@ -66,7 +66,7 @@ export const NewPasswordForm = () => {
             <InputComponent
               {...register("passwordConfirmation")}
               variant="underlined"
-              type="text"
+              type="password"
               label="Confirma tu contraseña"
               placeholder="Escribe tu contraseña"
               messageError={errors.passwordConfirmation?.message}
